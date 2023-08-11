@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import styled from 'styled-components';
+import axios from 'axios';
 import copy from 'copy-to-clipboard';
 import './App.css';
 import Logo from '../src/assets/logo.png';
@@ -77,26 +78,18 @@ const ErrorMsg = styled.p`
   font-weight: 700;
 `;
 
-/* const Table = styled.table`
-  font-size: 12px;
-  th {
-    width: 75px;
-    text-align: center;
-  }
-`; */
-
 function App() {
   const formRef = useRef<HTMLFormElement>(null);
   let date: Date = new Date();
   const [prospectData, setProspectData] = useState({
-    firstContact: '',
-    asesor: '',
-    name: '',
-    nss: '',
-    money: '',
-    phone: '',
-    facebook: '',
-    call: '',
+    PROSPECTO: '',
+    ATENCION: '',
+    CLIENTE: '',
+    NSS: '',
+    PRECALIFICACIÓN: '',
+    TEL: '',
+    FACEBOOK: '',
+    SEGUIMIENTO: '',
   });
 
   const handleChange = (e: any) => {
@@ -107,32 +100,32 @@ function App() {
     });
   };
 
-  const copyWhatsapp = () => {
+  /* const copyWhatsapp = () => {
     copy(
-      `Prospectó: ${prospectData.firstContact} / ${prospectData.asesor} 
-${prospectData.name} 
-NSS: ${prospectData.nss}
-Contaría con:  ${prospectData.money}
-Número de teléfono: ${prospectData.phone}
-Facebook: ${prospectData.facebook} 
-Llamar: ${prospectData.call}`,
+      `Prospectó: ${prospectData.PROSPECTO} / ${prospectData.ATENCION} 
+${prospectData.CLIENTE} 
+NSS: ${prospectData.NSS}
+Contaría con:  ${prospectData.PRECALIFICACIÓN}
+Número de teléfono: ${prospectData.TEL}
+FACEBOOK: ${prospectData.FACEBOOK} 
+Llamar: ${prospectData.SEGUIMIENTO}`,
       {
         debug: true,
         message: 'Press #{key} to copy',
       }
     );
-  };
+  }; */
 
   const cleanFields = () => {
     setProspectData({
       ...prospectData,
-      asesor: prospectData.asesor === 'Ramon' ? 'Ismael' : 'Ramon',
-      name: '',
-      nss: '',
-      money: '',
-      phone: '',
-      facebook: '',
-      call: '',
+      ATENCION: prospectData.ATENCION === 'Ramon' ? 'Ismael' : 'Ramon',
+      CLIENTE: '',
+      NSS: '',
+      PRECALIFICACIÓN: '',
+      TEL: '',
+      FACEBOOK: '',
+      SEGUIMIENTO: '',
     });
   };
 
@@ -142,13 +135,13 @@ Llamar: ${prospectData.call}`,
       <table>
       <tr>
       <td>${date.toLocaleDateString().split('/')[0]}</td>
-      <td>${prospectData.name}</td>
-      <td>${prospectData.money}</td>
-      <td>${prospectData.phone}</td>
+      <td>${prospectData.CLIENTE}</td>
+      <td>${prospectData.PRECALIFICACIÓN}</td>
+      <td>${prospectData.TEL}</td>
       <td></td>
-      <td>Llamada: ${prospectData.call}</td>
-      <td>${prospectData.firstContact}</td>
-      <td>${prospectData.asesor}</td>
+      <td>Llamada: ${prospectData.SEGUIMIENTO}</td>
+      <td>${prospectData.PROSPECTO}</td>
+      <td>${prospectData.ATENCION}</td>
     </tr></table>`,
       {
         format: 'text/html',
@@ -156,33 +149,57 @@ Llamar: ${prospectData.call}`,
     );
   }; */
 
-  const allActions = () => {
-    copy(
+  const allActions = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    /* copy(
       `
       <table>
       <tr>
       <td>${date.toLocaleDateString().split('/')[0]}</td>
-      <td>${prospectData.name}</td>
-      <td>${prospectData.money}</td>
-      <td>${prospectData.phone}</td>
+      <td>${prospectData.CLIENTE}</td>
+      <td>${prospectData.PRECALIFICACIÓN}</td>
+      <td>${prospectData.TEL}</td>
       <td></td>
-      <td>Llamada: ${prospectData.call}</td>
-      <td>${prospectData.firstContact}</td>
-      <td>${prospectData.asesor}</td>
+      <td>Llamada: ${prospectData.SEGUIMIENTO}</td>
+      <td>${prospectData.PROSPECTO}</td>
+      <td>${prospectData.ATENCION}</td>
     </tr></table>`,
       {
         format: 'text/html',
       }
-    );
+    ); */
+    const scriptURL =
+      'https://script.google.com/macros/s/AKfycbzk7rTMMzVKQpJB55nJTMy-9UOmamp2EVLEoKqbkvCjQ_3-Nk6_Y3TJ94wj-E2uuesBtQ/exec';
+    /* const scriptURL =
+      'https://script.google.com/macros/s/AKfycbxIf9NoWRoAU0QWAZnaOZ4uOYAXOlCC3vCORLh71-zPHMl7kN-uXlA2E15BfQ86SrFM/exec'; */
+
+    //submitButton.disabled = true
+    let requestBody: any = new FormData();
+    requestBody.append('DATE', new Date().getDate());
+    requestBody.append('CLIENTE', prospectData.CLIENTE);
+    requestBody.append('PRECALIFICACIÓN', prospectData.PRECALIFICACIÓN);
+    requestBody.append('TEL', prospectData.TEL);
+    requestBody.append('SEGUIMIENTO', prospectData.SEGUIMIENTO);
+    requestBody.append('PROSPECTO', prospectData.PROSPECTO);
+    requestBody.append('ATENCION', prospectData.ATENCION);
+
+    axios
+      .post(scriptURL, requestBody)
+      .then(function (response) {
+        console.log(response, 'good good');
+      })
+      .catch(function (error) {
+        console.log(error, 'bad bad');
+      });
 
     window.open(
-      `https://api.whatsapp.com/send?text=Prospectó:%20${prospectData.firstContact}%20/%20${prospectData.asesor}%0A${prospectData.name}%0ANSS:%20${prospectData.nss}%0AContaría%20con:%20${prospectData.money}%0ANúmero%20de%20teléfono:%20${prospectData.phone}%0AFacebook:%20${prospectData.facebook}%0ALlamar:%20${prospectData.call}`
+      `https://api.whatsapp.com/send?text=Prospectó:%20${prospectData.PROSPECTO}%20/%20${prospectData.ATENCION}%0A${prospectData.CLIENTE}%0ANSS:%20${prospectData.NSS}%0AContaría%20con:%20${prospectData.PRECALIFICACIÓN}%0ANúmero%20de%20teléfono:%20${prospectData.TEL}%0AFACEBOOK:%20${prospectData.FACEBOOK}%0ALlamar:%20${prospectData.SEGUIMIENTO}`
     );
   };
 
   /* const sendWhatsapp = () => {
     window.open(
-      `https://api.whatsapp.com/send?text=Prospectó:%20${prospectData.firstContact}%20/%20${prospectData.asesor}%0A${prospectData.name}%0ANSS:%20${prospectData.nss}%0AContaría%20con:%20${prospectData.money}%0ANúmero%20de%20teléfono:%20${prospectData.phone}%0AFacebook:%20${prospectData.facebook}%0ALlamar:%20${prospectData.call}`
+      `https://api.whatsapp.com/send?text=Prospectó:%20${prospectData.PROSPECTO}%20/%20${prospectData.ATENCION}%0A${prospectData.CLIENTE}%0ANSS:%20${prospectData.NSS}%0AContaría%20con:%20${prospectData.PRECALIFICACIÓN}%0ANúmero%20de%20teléfono:%20${prospectData.TEL}%0AFACEBOOK:%20${prospectData.FACEBOOK}%0ALlamar:%20${prospectData.SEGUIMIENTO}`
     );
   }; */
 
@@ -193,25 +210,25 @@ Llamar: ${prospectData.call}`,
         <h1>AlDia</h1>
       </LogoContainer>
       <div className="card">
-        <form ref={formRef} onSubmit={allActions}>
+        <form /* ref={formRef} */ onSubmit={allActions}>
           <InputItem>
-            <label htmlFor="firstContact">Prospectó</label>
+            <label htmlFor="PROSPECTO">Prospectó</label>
             <input
               type="text"
-              name="firstContact"
+              name="PROSPECTO"
               id=""
-              value={prospectData.firstContact}
+              value={prospectData.PROSPECTO}
               onChange={handleChange}
               autoComplete="off"
               required
             />
           </InputItem>
           <InputItem>
-            <label htmlFor="asesor">Asignado a</label>
+            <label htmlFor="ATENCION">Asignado a</label>
             <select
-              name="asesor"
+              name="ATENCION"
               onChange={handleChange}
-              value={prospectData.asesor}
+              value={prospectData.ATENCION}
               required
             >
               <option value="">Elige un asesor</option>
@@ -221,82 +238,81 @@ Llamar: ${prospectData.call}`,
           </InputItem>
           <h2>Datos del prospecto</h2>
           <InputItem>
-            <label htmlFor="name">Nombre del prospecto</label>
+            <label htmlFor="CLIENTE">Nombre del prospecto</label>
             <input
               type="text"
-              name="name"
+              name="CLIENTE"
               id=""
-              value={prospectData.name}
+              value={prospectData.CLIENTE}
               onChange={handleChange}
               autoComplete="off"
               required
             />
           </InputItem>
           <InputItem>
-            <label htmlFor="nss">NSS</label>
+            <label htmlFor="NSS">NSS</label>
             <input
               type="text"
-              name="nss"
+              name="NSS"
               id=""
-              value={prospectData.nss}
+              value={prospectData.NSS}
               onChange={handleChange}
               autoComplete="off"
             />
           </InputItem>
-          {prospectData.nss.length !== 11 && prospectData.nss.length > 0 ? (
+          {prospectData.NSS.length !== 11 && prospectData.NSS.length > 0 ? (
             <ErrorMsg>
-              Debe tener 11 numeros, actualmente tiene {prospectData.nss.length}
+              Debe tener 11 numeros, actualmente tiene {prospectData.NSS.length}
             </ErrorMsg>
           ) : null}
           <InputItem>
-            <label htmlFor="money">Contaria con</label>
+            <label htmlFor="PRECALIFICACIÓN">Contaria con</label>
             <input
               type="text"
-              name="money"
+              name="PRECALIFICACIÓN"
               id=""
-              value={prospectData.money}
+              value={prospectData.PRECALIFICACIÓN}
               onChange={handleChange}
               autoComplete="off"
               required
             />
           </InputItem>
           <InputItem>
-            <label htmlFor="phone">Telefono</label>
+            <label htmlFor="TEL">Telefono</label>
             <input
               type="number"
-              name="phone"
+              name="TEL"
               id=""
-              value={prospectData.phone}
+              value={prospectData.TEL}
               onChange={handleChange}
               autoComplete="off"
               required
             />
           </InputItem>
-          {prospectData.phone.length !== 10 && prospectData.phone.length > 0 ? (
+          {prospectData.TEL.length !== 10 && prospectData.TEL.length > 0 ? (
             <ErrorMsg>
-              Debe tener 10 numeros, actualmente tiene{' '}
-              {prospectData.phone.length}
+              Debe tener 10 numeros, actualmente tiene {prospectData.TEL.length}
             </ErrorMsg>
           ) : null}
           <InputItem>
-            <label htmlFor="facebook">Facebook</label>
+            <label htmlFor="FACEBOOK">FACEBOOK</label>
             <input
               type="text"
-              name="facebook"
+              name="FACEBOOK"
               id=""
-              value={prospectData.facebook}
+              value={prospectData.FACEBOOK}
               onChange={handleChange}
               autoComplete="off"
               required
             />
           </InputItem>
           <InputItem>
-            <label htmlFor="call">Llamar</label>
+            <label htmlFor="SEGUIMIENTO">Llamar</label>
             <input
               type="text"
-              name="call"
+              name="SEGUIMIENTO"
               id=""
-              value={prospectData.call}
+              value={prospectData.SEGUIMIENTO}
               onChange={handleChange}
               autoComplete="off"
               required
@@ -327,13 +343,13 @@ Llamar: ${prospectData.call}`,
           <tbody>
             <tr>
               <td>{date.toLocaleDateString().split('/')[0]}</td>
-              <td>{prospectData.name}</td>
-              <td>{prospectData.money}</td>
-              <td>{prospectData.phone}</td>
+              <td>{prospectData.CLIENTE}</td>
+              <td>{prospectData.PRECALIFICACIÓN}</td>
+              <td>{prospectData.TEL}</td>
               <td></td>
-              <td>Llamada: {prospectData.call}</td>
-              <td>{prospectData.firstContact}</td>
-              <td>{prospectData.asesor}</td>
+              <td>Llamada: {prospectData.SEGUIMIENTO}</td>
+              <td>{prospectData.PROSPECTO}</td>
+              <td>{prospectData.ATENCION}</td>
             </tr>
           </tbody>
         </Table>
