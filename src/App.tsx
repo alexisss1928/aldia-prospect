@@ -181,7 +181,7 @@ Llamar: ${prospectData.SEGUIMIENTO}`,
     requestBody.append('TEL', prospectData.TEL);
     requestBody.append('SEGUIMIENTO', prospectData.SEGUIMIENTO);
     requestBody.append('PROSPECTO', prospectData.PROSPECTO);
-    requestBody.append('ATENCION', prospectData.ATENCION);
+    requestBody.append('ATENCION', 'Ismael');
 
     axios
       .post(scriptURL, requestBody)
@@ -223,7 +223,7 @@ Llamar: ${prospectData.SEGUIMIENTO}`,
               required
             />
           </InputItem>
-          <InputItem>
+          {/* <InputItem>
             <label htmlFor="ATENCION">Asignado a</label>
             <select
               name="ATENCION"
@@ -235,7 +235,7 @@ Llamar: ${prospectData.SEGUIMIENTO}`,
               <option value="Ismael">Ismael</option>
               <option value="Ramon">Ramon</option>
             </select>
-          </InputItem>
+          </InputItem> */}
           <h2>Datos del prospecto</h2>
           <InputItem>
             <label htmlFor="CLIENTE">Nombre del prospecto</label>
